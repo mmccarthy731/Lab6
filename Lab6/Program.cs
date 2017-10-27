@@ -11,31 +11,35 @@ namespace Lab6
         static void Main(string[] args)
         {
             Console.WriteLine("This is the Pig Latin Translator!\n\nThis program takes a word that you enter and translates it into Pig Latin!\n");
+            string name = GetName("Please enter your name: ");
+
+            char[] vowels = { 'a', 'e', 'i', 'o', 'u' };
 
             bool repeat = true;
             while (repeat)
             {
-                string name = GetName("Please enter your name: ");
-
-                string userInput = GetWord("Please enter a word to be translated into Pig Latin: ");
-
-                char[] vowels = { 'a', 'e', 'i', 'o', 'u' };
-                int position = userInput.ToLower().IndexOfAny(vowels);
-                string postString = userInput.Substring(position);
-                char[] arrayOne = userInput.ToCharArray(0, position);
-                string preString = new string(arrayOne);
-
-                if (position == 0)
+                string[] userInput = GetWord("Please enter a sentence to be translated into Pig Latin: ");
+                Console.Write("\nYour entry translated to Pig Latin is: ");
+                for (int i = 0; i < userInput.Count(); i++)
                 {
-                    string result = string.Concat(userInput, "way");
-                    Console.WriteLine($"{userInput} is {result} in Pig Latin.");
+                    string word = userInput[i];
+                    int position = word.ToLower().IndexOfAny(vowels);
+            
+                    char[] arrayOne = word.ToCharArray(0, position);
+                    string preString = new string(arrayOne);
+                    string postString = word.Substring(position);
+                    if (position == 0)
+                    {
+                        string result = string.Concat(word, "way");
+                        Console.Write(result+" ");
+                    }
+                    else
+                    {
+                        string result = string.Concat(postString, preString, "ay");
+                        Console.Write(result + " ");
+                    }
                 }
-                else
-                {
-                    string result = string.Concat(postString, preString, "ay");
-                    Console.WriteLine($"{userInput} is {result} in Pig Latin.");
-                }
-                repeat = DoAgain($"Would you like to translate another word to Pig Latin, {name}? (Y or N): ");
+                repeat = DoAgain($"\n\nWould you like to translate another sentence to Pig Latin, {name}? (Y or N): ");
             }
             Console.WriteLine("Thank you for using the Pig Latin Translator!\n\nGoodbye!");
         }
@@ -44,21 +48,18 @@ namespace Lab6
         {
             Console.Write(prompt);
             string name = Console.ReadLine();
-            Console.Write($"Hello {name}! ");
+            Console.Write($"\nHello {name}! ");
             return name;
         }
 
-        private static string GetWord(string prompt)
+        private static string[] GetWord(string prompt)
         {
             Console.Write(prompt);
             string input = Console.ReadLine().Trim();
-            if(!input.Contains('a') && !input.Contains('e') && !input.Contains('i') && !input.Contains('o') && !input.Contains('u'))
-            {
-                Console.WriteLine("The word you entered contained no vowels and could not be translated to Pig Latin.");
-                return GetWord(prompt);
-            }
-            return input;
+            string[] arrayOne = input.Split(null as string[], StringSplitOptions.RemoveEmptyEntries);
+            return arrayOne;
         }
+
 
         private static bool DoAgain(string prompt)
         {
