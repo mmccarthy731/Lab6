@@ -9,10 +9,10 @@ namespace Lab6
     class Program
     {
         static char[] vowels = { 'a', 'e', 'i', 'o', 'u' };
-        static char[] numbers = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
         static void Main(string[] args)
         {
+            //Greet the user, get user name
             Console.WriteLine("This is the Pig Latin Translator!\nThis program takes a sentence that you enter and translates it into Pig Latin!");
             string name = GetName("Please enter your name: ");
             Console.Write($"Hello, {name}! ");
@@ -23,17 +23,19 @@ namespace Lab6
                 string[] userInput = GetInput("Please enter a sentence to be translated into Pig Latin: ");
                 string pigLatin = Translate(userInput);
                 Console.WriteLine($"\nYour entry translated to Pig Latin is:\n\n{pigLatin}\n");
-                repeat = DoAgain($"Would you like to translate another sentence to Pig Latin, {name}? (Y or N): ");
+                repeat = DoAgain($"Would you like to translate another sentence, {name}? (Y or N): ");
             }
             Console.WriteLine("Thank you for using the Pig Latin Translator!\n\nGoodbye!");
         }
 
+        //Method to obtain user name
         private static string GetName(string prompt)
         {
             Console.Write(prompt);
             return Console.ReadLine();
         }
 
+        //Method to prompt for input and store into string array
         private static string[] GetInput(string prompt)
         {
             Console.WriteLine($"{prompt}\n");
@@ -47,54 +49,71 @@ namespace Lab6
             return arrayOne;
         }
 
+        //Method to test if string is alpha-numeric
         private static bool IsAlpha(string input)
         {
             char[] letters = input.ToCharArray();
+            int numAndSym = 0;
             foreach(char letter in letters)
             {
                 if (!char.IsLetter(letter))
                 {
-                    return false;
+                    numAndSym++;
                 }
             }
-            return true;
+            if (numAndSym == 1 && input.Contains("'")) //This will allow contractions to be translated
+            {
+                return true;
+            }
+            else if (numAndSym == 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
+        //Method to translate string into Pig Latin
         private static string Translate(string[] userInput)
         {
             int length = userInput.Count();
-            string[] resultArray = new string[length];
+            string[] resultArray = new string[length]; //declare new array to store result
             for (int i = 0; i < length; i++)
             {
                 string word = userInput[i];
                 int position = word.ToLower().IndexOfAny(vowels);
-                if (position < 0)
+
+                if (position < 0) //if no vowels, do not translate
                 {
                     resultArray[i] = word;
                 }
                 else
                 {
-                    char[] arrayOne = word.ToCharArray(0, position);
-                    string preString = new string(arrayOne);
-                    string postString = word.Substring(position);
-                    if (!IsAlpha(word) && !word.Contains("'"))
+                    char[] arrayOne = word.ToCharArray(0, position);//cut letters before first vowel out, store in char array
+                    string preString = new string(arrayOne);//cast char array to string, store in string variable
+                    string postString = word.Substring(position); //store remaining letters in seperate string variable
+
+                    if (!IsAlpha(word)) //calls IsAplha method to determine if input is valid word
                     {
                         resultArray[i] = word;
                     }
-                    else if (position == 0)
+                    else if (position == 0) //code for words that begin with vowel
                     {
                         resultArray[i] = string.Concat(word, "way");
                     }
-                    else
+                    else //catch-all for all other words
                     {
                         resultArray[i] = string.Concat(postString, preString, "ay");
                     }
                 }
             }
-            string resultString = string.Join(" ", resultArray);
+            string resultString = string.Join(" ", resultArray); //combine array strings into one string
             return resultString;
         }
 
+        //Method to control the while loop
         private static bool DoAgain(string prompt)
         {
             Console.Write(prompt);
