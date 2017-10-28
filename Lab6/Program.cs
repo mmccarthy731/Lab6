@@ -38,6 +38,11 @@ namespace Lab6
         {
             Console.WriteLine($"{prompt}\n");
             string input = Console.ReadLine().Trim();
+            if (String.IsNullOrEmpty(input))
+            {
+                Console.Write("You didn't input anything! ");
+                return GetInput(prompt);
+            }
             string[] arrayOne = input.Split(null as string[], StringSplitOptions.RemoveEmptyEntries);
             return arrayOne;
         }
