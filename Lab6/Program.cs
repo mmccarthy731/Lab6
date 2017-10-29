@@ -11,7 +11,7 @@ namespace Lab6
         static void Main(string[] args)
         {
             //Greet the user, get user name
-            Console.WriteLine("This is the Pig Latin Translator!\nThis program takes a sentence that you enter and translates it into Pig Latin!");
+            Console.WriteLine("This is the Pig Latin Translator!\n\nThis program takes a sentence that you enter and translates it into Pig Latin!");
             string name = GetName("\nPlease enter your name: ");
             Console.Write($"\nHello, {name}! ");
 
@@ -23,7 +23,7 @@ namespace Lab6
                 Console.WriteLine($"\nYour entry translated to Pig Latin is:\n\n{pigLatin}\n");
                 repeat = DoAgain($"Would you like to translate another sentence, {name}? (Y or N): ");
             }
-            Console.WriteLine("Thank you for using the Pig Latin Translator!\n\nGoodbye!");
+            Console.WriteLine("\nThank you for using the Pig Latin Translator!\n\nGoodbye!");
             Console.ReadLine();
         }
 
