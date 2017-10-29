@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lab6
 {
@@ -14,8 +11,8 @@ namespace Lab6
         {
             //Greet the user, get user name
             Console.WriteLine("This is the Pig Latin Translator!\nThis program takes a sentence that you enter and translates it into Pig Latin!");
-            string name = GetName("Please enter your name: ");
-            Console.Write($"Hello, {name}! ");
+            string name = GetName("\nPlease enter your name: ");
+            Console.Write($"\nHello, {name}! ");
 
             bool repeat = true;
             while (repeat)
@@ -26,6 +23,7 @@ namespace Lab6
                 repeat = DoAgain($"Would you like to translate another sentence, {name}? (Y or N): ");
             }
             Console.WriteLine("Thank you for using the Pig Latin Translator!\n\nGoodbye!");
+            Console.ReadLine();
         }
 
         //Method to obtain user name
@@ -61,7 +59,7 @@ namespace Lab6
                     numAndSym++;
                 }
             }
-            if (numAndSym == 1 && input.Contains("'")) //This will allow contractions to be translated
+            if (numAndSym == 1 && input.Contains("'") && input.IndexOf("'") != 0 && input.IndexOf("'") != (input.Length - 1)) //This will allow contractions to be translated
             {
                 return true;
             }
@@ -78,13 +76,12 @@ namespace Lab6
         //Method to translate string into Pig Latin
         private static string Translate(string[] userInput)
         {
-            int length = userInput.Count();
-            string[] resultArray = new string[length]; //declare new array to store result
-            for (int i = 0; i < length; i++)
+            int words = userInput.Count();
+            string[] resultArray = new string[words]; //declare new array to store result
+            for (int i = 0; i < words; i++)
             {
                 string word = userInput[i];
                 int position = word.ToLower().IndexOfAny(vowels);
-
                 if (position < 0) //if no vowels, do not translate
                 {
                     resultArray[i] = word;
@@ -95,9 +92,9 @@ namespace Lab6
                     string preString = new string(arrayOne);//cast char array to string, store in string variable
                     string postString = word.Substring(position); //store remaining letters in seperate string variable
 
-                    if (!IsAlpha(word)) //calls IsAplha method to determine if input is valid word
+                    if (!IsAlpha(word)) //calls IsAplha method to determine if input is valid word or contraction
                     {
-                        resultArray[i] = word;
+                        resultArray[i] = word; //if not valid word or contraction, do not translate
                     }
                     else if (position == 0) //code for words that begin with vowel
                     {
