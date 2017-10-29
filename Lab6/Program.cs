@@ -6,6 +6,7 @@ namespace Lab6
     class Program
     {
         static char[] vowels = { 'a', 'e', 'i', 'o', 'u' };
+        static char[] okSymbols = { '.', '!', '?', ',', ';', ':' };
 
         static void Main(string[] args)
         {
@@ -18,7 +19,7 @@ namespace Lab6
             while (repeat)
             {
                 string[] userInput = GetInput("Please enter a sentence to be translated into Pig Latin: ");
-                string pigLatin = Translate(userInput);
+                string pigLatin = GetTranslation(userInput);
                 Console.WriteLine($"\nYour entry translated to Pig Latin is:\n\n{pigLatin}\n");
                 repeat = DoAgain($"Would you like to translate another sentence, {name}? (Y or N): ");
             }
@@ -38,13 +39,70 @@ namespace Lab6
         {
             Console.WriteLine($"{prompt}\n");
             string input = Console.ReadLine().Trim();
-            if (String.IsNullOrEmpty(input))
+            if (String.IsNullOrEmpty(input)) //Ensure that the user did not input a null string or white space
             {
                 Console.Write("You didn't input anything! ");
                 return GetInput(prompt);
             }
-            string[] arrayOne = input.Split(null as string[], StringSplitOptions.RemoveEmptyEntries);
+            string[] arrayOne = input.Split(null as string[], StringSplitOptions.RemoveEmptyEntries); //splits sentence at each space and stores into an array
             return arrayOne;
+        }
+
+        //Method to translate string into Pig Latin
+        private static string GetTranslation(string[] userInput)
+        {
+            int words = userInput.Count();
+            string[] resultArray = new string[words]; //declare new array to store result
+            for (int i = 0; i < words; i++)
+            {
+                string word = userInput[i];
+                int length = word.Length - 1;
+                if(word.IndexOfAny(okSymbols) == length) //Code that allows valid words to be translated, even if immediately followed by proper punctuation for sentence
+                {
+                    string punct = word.Substring(length);
+                    char[] letters = word.ToCharArray(0, length);
+                    string result = new string(letters);
+                    string resultWord = TranslateWord(result);
+                    resultArray[i] = string.Concat(resultWord, punct); //word is translated to Pig Latin, and the punctuation remains at the end of the string
+                }
+                else
+                {
+                    resultArray[i] = TranslateWord(word);
+                }
+            }
+            string resultString = string.Join(" ", resultArray); //combine array strings into one string
+            return resultString;
+        }
+
+        //Method to translate individual words of user input string
+        private static string TranslateWord(string word)
+        {
+            int position = word.ToLower().IndexOfAny(vowels);
+            if (position < 0) //if no vowels, do not translate
+            {
+                return word;
+            }
+            else
+            {
+                char[] letters = word.ToCharArray(0, position);//cut letters before first vowel out, store in char array
+                string preString = new string(letters);//cast char array to string, store in string variable
+                string postString = word.Substring(position); //store remaining letters in seperate string variable
+
+                if (!IsAlpha(word)) //calls IsAplha method to determine if input is valid word or contraction
+                {
+                    return word; //if not valid word or contraction, do not translate
+                }
+                else if (position == 0) //code for words that begin with vowel
+                {
+                    word = string.Concat(word, "way");
+                    return word;
+                }
+                else //catch-all for all other words
+                {
+                    word = string.Concat(postString, preString, "ay");
+                    return word;
+                }
+            }
         }
 
         //Method to test if string is alpha-numeric
@@ -52,7 +110,7 @@ namespace Lab6
         {
             char[] letters = input.ToCharArray();
             int numAndSym = 0;
-            foreach(char letter in letters)
+            foreach (char letter in letters)
             {
                 if (!char.IsLetter(letter))
                 {
@@ -71,43 +129,6 @@ namespace Lab6
             {
                 return false;
             }
-        }
-
-        //Method to translate string into Pig Latin
-        private static string Translate(string[] userInput)
-        {
-            int words = userInput.Count();
-            string[] resultArray = new string[words]; //declare new array to store result
-            for (int i = 0; i < words; i++)
-            {
-                string word = userInput[i];
-                int position = word.ToLower().IndexOfAny(vowels);
-                if (position < 0) //if no vowels, do not translate
-                {
-                    resultArray[i] = word;
-                }
-                else
-                {
-                    char[] arrayOne = word.ToCharArray(0, position);//cut letters before first vowel out, store in char array
-                    string preString = new string(arrayOne);//cast char array to string, store in string variable
-                    string postString = word.Substring(position); //store remaining letters in seperate string variable
-
-                    if (!IsAlpha(word)) //calls IsAplha method to determine if input is valid word or contraction
-                    {
-                        resultArray[i] = word; //if not valid word or contraction, do not translate
-                    }
-                    else if (position == 0) //code for words that begin with vowel
-                    {
-                        resultArray[i] = string.Concat(word, "way");
-                    }
-                    else //catch-all for all other words
-                    {
-                        resultArray[i] = string.Concat(postString, preString, "ay");
-                    }
-                }
-            }
-            string resultString = string.Join(" ", resultArray); //combine array strings into one string
-            return resultString;
         }
 
         //Method to control the while loop
