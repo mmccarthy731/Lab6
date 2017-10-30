@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace Lab6
 {
@@ -51,17 +50,16 @@ namespace Lab6
         //Method to translate string into Pig Latin
         private static string GetTranslation(string[] userInput)
         {
-            int words = userInput.Count();
+            int words = userInput.Length;
             string[] resultArray = new string[words]; //declare new array to store result
             for (int i = 0; i < words; i++)
             {
                 string word = userInput[i];
-                int length = word.Length - 1;
-                if(word.IndexOfAny(okSymbols) == length) //Code that allows valid words to be translated, even if immediately followed by proper punctuation for sentence
+                int lastPos = word.Length - 1;
+                if(word.IndexOfAny(okSymbols) == lastPos) //Code that allows valid words to be translated, even if immediately followed by proper punctuation for sentence
                 {
-                    string punct = word.Substring(length);
-                    char[] letters = word.ToCharArray(0, length);
-                    string result = new string(letters);
+                    string punct = word.Substring(lastPos);
+                    string result = word.Substring(0, lastPos);
                     string resultWord = TranslateWord(result);
                     resultArray[i] = string.Concat(resultWord, punct); //word is translated to Pig Latin, and the punctuation remains at the end of the string
                 }
@@ -71,7 +69,7 @@ namespace Lab6
                 }
             }
             string resultString = string.Join(" ", resultArray); //combine array strings into one string
-            return resultString;
+            return resultString
         }
 
         //Method to translate individual words of user input string
@@ -84,8 +82,7 @@ namespace Lab6
             }
             else
             {
-                char[] letters = word.ToCharArray(0, position);//cut letters before first vowel out, store in char array
-                string preString = new string(letters);//cast char array to string, store in string variable
+                string preString = word.Substring(0, position);//cast char array to string, store in string variable
                 string postString = word.Substring(position); //store remaining letters in seperate string variable
 
                 if (!IsAlpha(word)) //calls IsAplha method to determine if input is valid word or contraction
@@ -114,7 +111,7 @@ namespace Lab6
             {
                 if (!char.IsLetter(letter))
                 {
-                    numAndSym++;
+                    numAndSym++; //utilize foreach loop to count number of symbols
                 }
             }
             if (numAndSym == 1 && input.Contains("'") && input.IndexOf("'") != 0 && input.IndexOf("'") != (input.Length - 1)) //This will allow contractions to be translated
